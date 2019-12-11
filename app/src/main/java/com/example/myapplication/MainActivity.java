@@ -1,5 +1,6 @@
 package com.example.myapplication;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.database.Cursor;
@@ -7,10 +8,16 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
+
+    DatabaseHelper userDB;
+    Button btnAddData, btnViewData;
+    EditText etFirstname, etLastname, etBoattype, etYardstick;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,49 +39,79 @@ public class MainActivity extends AppCompatActivity {
 
     public void usersettings(View view){
         setContentView(R.layout.usersettings);
+
+        userDB = new DatabaseHelper(this);
+
+        btnViewData = (Button) findViewById(R.id.btnViewData);
+
+        ViewData();
     }
 
     public void userfilltable(View view){
         setContentView(R.layout.userfilltable);
+
+        userDB = new DatabaseHelper(this);
+
+        etFirstname = (EditText) findViewById(R.id.firstname);
+        etLastname = (EditText) findViewById(R.id.lastname);
+        etBoattype = (EditText) findViewById(R.id.boattype);
+        etYardstick = (EditText) findViewById(R.id.yardstick);
+        btnAddData = (Button) findViewById(R.id.btnaddData);
+
+        AddData();
     }
 
-    public void useradd(View view){
-        //useredit("add");
-        Log.i("Knopf","Gedrückt");
-        useredit("get");
-    }
+    public void AddData(){
+        btnAddData.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
-    public void useredit(String option){
-        try{
-            SQLiteDatabase sqLiteDatabase = this.openOrCreateDatabase("users", MODE_PRIVATE, null);
-            sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS users (firstname VARCHAR, lastname VARCHAR, boattype VARCHAR, yardstick INT)");
+                String firstname = etFirstname.getText().toString();
+                String lastname = etLastname.getText().toString();
+                String boattype = etBoattype.getText().toString();
+                int yardstick = Integer.parseInt(etYardstick.getText().toString());
 
-            switch(option){
-                case "add":
-                    TextView firstname = findViewById(R.id.firstname);//"+firstname.getText().toString()+"
-                    TextView lastname = findViewById(R.id.lastname);//"+lastname.getText().toString()+"
-                    TextView boattype = findViewById(R.id.boattype);//"+boattype.getText().toString()+"
-                    TextView yardstick = findViewById(R.id.yardstick);//"+Integer.parseInt(yardstick.getText().toString())+"
+                boolean insertData = userDB.AddData(firstname, lastname, boattype, yardstick);
 
-
-                    sqLiteDatabase.execSQL("INSERT INTO users (firstname, lastname, boattype, yardstick) VALUES ('Tom','jo','igel',2)");
-                    Toast.makeText(this,"Benutzer hinzugefügt", Toast.LENGTH_LONG).show();
-                    break;
-                case "get":
-                    Cursor c = sqLiteDatabase.rawQuery("SELECT * FROM users", null);
-                    int first = c.getColumnIndex("name");
-                    int last = c.getColumnIndex("last");
-
-                    if(c.moveToFirst()){
-                        do{
-                            Log.i("Vorname", c.getString(first));
-                            Log.i("Vorname", c.getString(last));
-                        }while(c.moveToNext());
-                    }
+                if(insertData == true){
+                    Toast.makeText(MainActivity.this, "Benutzer hinzugefügt", Toast.LENGTH_LONG).show();
+                }else{
+                    Toast.makeText(MainActivity.this, "Irgendwas ist schief gelaufen", Toast.LENGTH_LONG).show();
+                }
             }
+        });
+    }
 
-        }catch(Exception e){
-            e.printStackTrace();
-        }
+    public void ViewData(){
+        btnViewData.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Cursor data = userDB.showData();
+
+                if(data.getCount() == 0){
+                    display("Fehler", "Keine Teilnehmer vorhanden");
+                    return;
+                }
+                StringBuffer buffer = new StringBuffer();
+                while(data.moveToNext()){
+                    buffer.append("Nummer: " + data.getString(0) + "\n");
+                    buffer.append("Vorname: " + data.getString(1) + "\n");
+                    buffer.append("Nachname: " + data.getString(2) + "\n");
+                    buffer.append("Boottyp: " + data.getString(3) + "\n");
+                    buffer.append("Yardstick: " + data.getInt(4) + "\n\n");
+
+
+                }
+                display("Teilnehmer:", buffer.toString());
+            }
+        });
+    }
+
+    public void display(String title, String message){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(true);
+        builder.setTitle(title);
+        builder.setMessage(message);
+        builder.show();
     }
 }
