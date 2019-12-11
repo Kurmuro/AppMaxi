@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
                     TextView yardstick = findViewById(R.id.yardstick);//"+Integer.parseInt(yardstick.getText().toString())+"
 
 
-                    sqLiteDatabase.execSQL("INSERT INTO users (firstname, lastname, boattype, yardstick) VALUES ('Tom','jo','igel',5)");
+                    sqLiteDatabase.execSQL("INSERT INTO users (firstname, lastname, boattype, yardstick) VALUES ('Tom','jo','igel',10)");
                     Toast.makeText(this,"Benutzer hinzugefügt", Toast.LENGTH_LONG).show();
                     break;
                 case "get":
