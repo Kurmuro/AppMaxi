@@ -7,7 +7,7 @@
     tools:context=".MainActivity">
 
     <Button
-        android:id="@+id/btnViewData"
+        android:id="@+id/btnEditData"
         android:layout_width="186dp"
         android:layout_height="62dp"
         android:layout_marginTop="16dp"
@@ -18,10 +18,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button8" />
+        app:layout_constraintTop_toBottomOf="@+id/btnAddUserdata" />
 
     <Button
-        android:id="@+id/button7"
+        android:id="@+id/btnDeleteData"
         android:layout_width="186dp"
         android:layout_height="62dp"
         android:layout_marginTop="16dp"
@@ -32,15 +32,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnViewData" />
+        app:layout_constraintTop_toBottomOf="@+id/btnEditData" />
 
     <Button
-        android:id="@+id/button8"
+        android:id="@+id/btnAddUserdata"
         android:layout_width="186dp"
         android:layout_height="62dp"
         android:layout_marginTop="80dp"
         android:background="#0131A2"
-        android:onClick="userfilltable"
         android:text="Teilnehmer hinzufügen"
         android:textColor="#FFFFFF"
         android:textSize="20sp"
