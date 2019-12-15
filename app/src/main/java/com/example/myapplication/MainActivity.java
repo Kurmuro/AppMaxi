@@ -24,6 +24,8 @@ public class MainActivity extends AppCompatActivity {
     Button btnAddData, btnEditData, btnDeleteData, btnAddUserdata, btnSelectUser;
     EditText etFirstname, etLastname, etBoattype, etYardstick;
 
+    boolean[] checked;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
         btnAddData = (Button) findViewById(R.id.btnaddData);
 
         Cursor data = userDB.showData();
-        data.move(1);
+        data.move(userid);
 
         etFirstname.setText(data.getString(1));
         etLastname.setText(data.getString(2));
@@ -317,7 +319,10 @@ public class MainActivity extends AppCompatActivity {
 
                 }
 
-                boolean[] checked = new boolean[users.size()];
+                if(checked == null) {
+                    checked = new boolean[users.size()];
+                    Log.i("Test", "nix da");
+                }else Log.i("Test", "es ist da");
 
                 userlist = users.toArray(userlist);
 
