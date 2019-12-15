@@ -8,8 +8,10 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import java.lang.reflect.Array;
@@ -325,9 +327,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //Liste der Teilnehmenden Benutzer anzeigen
-    public void displaySelectView(String title, String[] userlist, final boolean[] checked, final List<Integer> numbers){
-        int[] userid;
+    public void displaySelectView(final String title, final String[] userlist, final boolean[] checked, final List<Integer> numbers){
+
         final List<Integer> usersid = new ArrayList<>();
+
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setCancelable(true);
         builder.setTitle(title);
@@ -347,7 +350,8 @@ public class MainActivity extends AppCompatActivity {
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Log.i("Test", usersid.toString());
+                regatta(null);
+                addUserstoList(usersid, checked, title, userlist, numbers);
             }
         });
         builder.setNegativeButton("Abbrechen", null);
@@ -357,5 +361,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //
-    public void addUserstoList()
+    public void addUserstoList(List<Integer> usersid, final boolean[] checked, final String title, final String[] userlist, final List<Integer> numbers){
+
+        Integer[] usersidstring = new Integer[usersid.size()];
+        usersidstring = usersid.toArray(usersidstring);
+
+        ArrayAdapter<Integer> adapter = new ArrayAdapter<>(this, R.layout.da_item, usersidstring);
+        ListView list  = findViewById(R.id.regatteusertabel);
+        list.setAdapter(adapter);
+
+
+
+    }
 }
