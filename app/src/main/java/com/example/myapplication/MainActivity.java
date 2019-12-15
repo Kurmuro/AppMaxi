@@ -129,6 +129,7 @@ public class MainActivity extends AppCompatActivity {
 
                     if(insertData){
                         Toast.makeText(MainActivity.this, "Benutzer hinzugefügt", Toast.LENGTH_LONG).show();
+                        setContentView(R.layout.userfilltable);
                     }else{
                         Toast.makeText(MainActivity.this, "Irgendwas ist schief gelaufen", Toast.LENGTH_LONG).show();
                     }
