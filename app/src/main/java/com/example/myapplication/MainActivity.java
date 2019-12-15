@@ -11,15 +11,15 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-import android.text.TextUtils;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     DatabaseHelper userDB;
-    Button btnAddData, btnEditData, btnDeleteData, btnAddUserdata;
+    Button btnAddData, btnEditData, btnDeleteData, btnAddUserdata, btnSelectUser;
     EditText etFirstname, etLastname, etBoattype, etYardstick;
 
     @Override
@@ -36,7 +36,10 @@ public class MainActivity extends AppCompatActivity {
 
     //Zur Regatta
     public void regatta (View view) {
+        userDB = new DatabaseHelper(this);
         setContentView(R.layout.regatta);
+        btnSelectUser = (Button) findViewById(R.id.btnSelectUser);
+        SelectUserData();
     }
 
     //Zum Blauenband
@@ -281,4 +284,78 @@ public class MainActivity extends AppCompatActivity {
         AlertDialog dialog = builder.create();
         dialog.show();
     }
+
+    //Liste erstellen mit allen Auswählbaren Benutzern
+    public void SelectUserData(){
+        btnSelectUser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Cursor data = userDB.showData();
+
+                if(data.getCount() == 0){
+                    Toast.makeText(MainActivity.this, "Keine Teilnehmer Vorhanden", Toast.LENGTH_LONG).show();
+                    return;
+                }
+
+                List<String> users = new ArrayList<String>();
+                String[] userlist = new String[users.size()];
+
+
+                List<Integer> numbers = new ArrayList<Integer>();
+
+                while(data.moveToNext()){
+                    StringBuffer buffer = new StringBuffer();
+                    numbers.add(data.getInt(0));
+                    buffer.append("Vorname: " + data.getString(1) + "\n");
+                    buffer.append("Nachname: " + data.getString(2) + "\n");
+                    buffer.append("Boottyp: " + data.getString(3) + "\n");
+                    buffer.append("Yardstick: " + data.getInt(4) + "\n");
+
+                    users.add( buffer.toString());
+
+                }
+
+                boolean[] checked = new boolean[users.size()];
+
+                userlist = users.toArray(userlist);
+
+                displaySelectView("Teilnehmer auswählen:", userlist , checked ,numbers);
+            }
+        });
+    }
+
+    //Liste der Teilnehmenden Benutzer anzeigen
+    public void displaySelectView(String title, String[] userlist, final boolean[] checked, final List<Integer> numbers){
+        int[] userid;
+        final List<Integer> usersid = new ArrayList<>();
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(true);
+        builder.setTitle(title);
+        builder.setMultiChoiceItems(userlist, checked , new DialogInterface.OnMultiChoiceClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which, boolean isChecked) {
+                if(!usersid.contains(numbers.get(which))) {
+                    usersid.add(numbers.get(which));
+                    Array.setBoolean(checked, which, true);
+                }else{
+                    usersid.remove(numbers.get(which));
+                    Array.setBoolean(checked, which, false);
+                }
+            }
+        });
+
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Log.i("Test", usersid.toString());
+            }
+        });
+        builder.setNegativeButton("Abbrechen", null);
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    //
+    public void addUserstoList()
 }
