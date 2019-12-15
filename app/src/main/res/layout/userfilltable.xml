@@ -95,7 +95,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginBottom="8dp"
-        android:onClick="zurück"
+        android:onClick="usersettings"
         android:text="Zurück"
         android:textSize="10sp"
         app:layout_constraintBottom_toBottomOf="parent"

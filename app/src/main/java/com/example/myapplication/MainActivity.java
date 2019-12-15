@@ -28,18 +28,24 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
     }
 
+    //Zucück zum Hauptmenü
     public void zurück(View view) { setContentView (R.layout.activity_main); }
 
+    //Zur Stegbelegung
     public void stegbelegung(View view) { setContentView(R.layout.steganlage); }
 
+    //Zur Regatta
     public void regatta (View view) {
         setContentView(R.layout.regatta);
     }
 
+    //Zum Blauenband
     public void blauesband (View view) {setContentView(R.layout.blauesband);}
 
+    //Zu den Blauesband Regeln
     public void regelnbb (View view) {setContentView(R.layout.regelnbb);}
 
+    //Benutzerverwaltung
     public void usersettings(View view){
         setContentView(R.layout.usersettings);
 
@@ -52,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
         btnAddUserdata.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                userfilltable(1, 0);
+                userfilltable();
             }
         });
 
@@ -60,7 +66,8 @@ public class MainActivity extends AppCompatActivity {
         DeleteData();
     }
 
-    public void userfilltable(int which, int userid){
+    //Formular zum Benutzer erstellen
+    public void userfilltable(){
         setContentView(R.layout.userfilltable);
 
         userDB = new DatabaseHelper(this);
@@ -71,25 +78,36 @@ public class MainActivity extends AppCompatActivity {
         etYardstick = (EditText) findViewById(R.id.yardstick);
         btnAddData = (Button) findViewById(R.id.btnaddData);
 
-        switch (which){
-            case 1: AddData();
-            case 2:
-
-                Cursor data = userDB.showData();
-                data.move(1);
-
-                etFirstname.setText(data.getString(1));
-                etLastname.setText(data.getString(2));
-                etBoattype.setText(data.getString(3));
-                etYardstick.setText(data.getString(4));
-
-                EditData(userid);
+        AddData();
 
         }
+
+    //Formular zum Benutzer bearbeiten
+    public void UserEdittable(int userid) {
+        setContentView(R.layout.userfilltable);
+
+        userDB = new DatabaseHelper(this);
+
+        etFirstname = (EditText) findViewById(R.id.firstname);
+        etLastname = (EditText) findViewById(R.id.lastname);
+        etBoattype = (EditText) findViewById(R.id.boattype);
+        etYardstick = (EditText) findViewById(R.id.yardstick);
+        btnAddData = (Button) findViewById(R.id.btnaddData);
+
+        Cursor data = userDB.showData();
+        data.move(1);
+
+        etFirstname.setText(data.getString(1));
+        etLastname.setText(data.getString(2));
+        etBoattype.setText(data.getString(3));
+        etYardstick.setText(data.getString(4));
+
+        EditData(userid);
 
 
     }
 
+    //Benutzer neu anlegen
     public void AddData(){
         btnAddData.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -123,6 +141,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    //Datenbank eintrag ändern
     public void EditData(final int userid){
         btnAddData.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -156,6 +175,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    //Liste erstellen mit allen Editierbaren Benutzern
     public void EditUserData(){
         btnEditData.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -190,6 +210,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    //Liste erstellen mit allen Löschbaren Benutzern
     public void DeleteData(){
         btnDeleteData.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -224,6 +245,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    //Lite der Löschbaren Benutzer anzeigen
     public void displayDeleteView(String title, String[] userlist, final List<Integer> numbers){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setCancelable(true);
@@ -243,6 +265,7 @@ public class MainActivity extends AppCompatActivity {
         dialog.show();
     }
 
+    //Liste der Edittierbaren Benutzer anzeigen
     public void displayEditView(String title, String[] userlist, final List<Integer> numbers){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setCancelable(true);
@@ -251,7 +274,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 Integer userid = numbers.get(which);
-                userfilltable(2, userid);
+                UserEdittable(userid);
             }
         });
         AlertDialog dialog = builder.create();
