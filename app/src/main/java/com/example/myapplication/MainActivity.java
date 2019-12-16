@@ -325,8 +325,7 @@ public class MainActivity extends AppCompatActivity {
 
                 if(checked == null) {
                     checked = new boolean[users.size()];
-                    Log.i("Test", "nix da");
-                }else Log.i("Test", "es ist da");
+                }
 
                 userlist = users.toArray(userlist);
 
@@ -346,21 +345,19 @@ public class MainActivity extends AppCompatActivity {
         builder.setMultiChoiceItems(userlist, checked , new DialogInterface.OnMultiChoiceClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which, boolean isChecked) {
-                if(!usersid.contains(numbers.get(which))) {
-                    usersid.add(numbers.get(which));
-                    Array.setBoolean(checked, which, true);
-                }else{
-                    usersid.remove(numbers.get(which));
-                    Array.setBoolean(checked, which, false);
-                }
             }
         });
 
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                for(int i = 0; i < checked.length; i++){
+                    if(checked[i]){
+                        usersid.add(numbers.get(i));
+                    }
+                }
                 regatta(null);
-                addUserstoList(usersid, checked, title, userlist, numbers);
+                addUserstoList(usersid);
             }
         });
         builder.setNegativeButton("Abbrechen", null);
@@ -370,7 +367,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //
-    public void addUserstoList(List<Integer> usersid, final boolean[] checked, final String title, final String[] userlist, final List<Integer> numbers){
+    public void addUserstoList(List<Integer> usersid){
         Cursor data = userDB.showData();
 
         List<String> users = new ArrayList<String>();
