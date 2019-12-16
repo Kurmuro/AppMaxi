@@ -68,6 +68,7 @@
         android:id="@+id/regatteusertabel"
         android:layout_width="410dp"
         android:layout_height="490dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintBottom_toTopOf="@+id/zurück"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

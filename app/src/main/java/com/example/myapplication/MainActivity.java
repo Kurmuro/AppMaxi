@@ -102,7 +102,11 @@ public class MainActivity extends AppCompatActivity {
         btnAddData = (Button) findViewById(R.id.btnaddData);
 
         Cursor data = userDB.showData();
-        data.move(userid);
+
+        data.moveToFirst();
+        while (data.getInt(data.getColumnIndex("ID")) != userid) {
+            data.moveToNext();
+        }
 
         etFirstname.setText(data.getString(1));
         etLastname.setText(data.getString(2));
@@ -367,11 +371,29 @@ public class MainActivity extends AppCompatActivity {
 
     //
     public void addUserstoList(List<Integer> usersid, final boolean[] checked, final String title, final String[] userlist, final List<Integer> numbers){
+        Cursor data = userDB.showData();
 
-        Integer[] usersidstring = new Integer[usersid.size()];
-        usersidstring = usersid.toArray(usersidstring);
+        List<String> users = new ArrayList<String>();
+        String[] usernamensliste = new String[users.size()];
 
-        ArrayAdapter<Integer> adapter = new ArrayAdapter<>(this, R.layout.da_item, usersidstring);
+        for(int i:usersid){
+            data.moveToFirst();
+            while (data.getInt(data.getColumnIndex("ID")) != i) {
+                data.moveToNext();
+            }
+            StringBuffer buffer = new StringBuffer();
+            buffer.append("Vorname: " + data.getString(1) + " ");
+            buffer.append("Nachname: " + data.getString(2) + " ");
+            buffer.append("Boottyp: " + data.getString(3) + " ");
+            buffer.append("Yardstick: " + data.getInt(4));
+
+            users.add( buffer.toString());
+
+        }
+
+        usernamensliste = users.toArray(usernamensliste);
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.da_item, usernamensliste);
         ListView list  = findViewById(R.id.regatteusertabel);
         list.setAdapter(adapter);
 
