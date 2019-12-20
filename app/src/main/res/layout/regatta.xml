@@ -66,10 +66,13 @@
 
     <ListView
         android:id="@+id/regatteusertabel"
-        android:layout_width="410dp"
-        android:layout_height="490dp"
+        android:layout_width="360dp"
+        android:layout_height="494dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
         android:layout_marginTop="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/zurück"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnSelectUser" />

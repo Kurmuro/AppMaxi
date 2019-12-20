@@ -18,6 +18,8 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.myapplication.DatabaseHelper.COL1;
+
 public class MainActivity extends AppCompatActivity {
 
     DatabaseHelper userDB;
@@ -393,8 +395,8 @@ public class MainActivity extends AppCompatActivity {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.da_item, usernamensliste);
         ListView list  = findViewById(R.id.regatteusertabel);
         list.setAdapter(adapter);
-
-
-
     }
+
+
 }
+
