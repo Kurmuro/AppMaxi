@@ -1,16 +1,20 @@
 package com.example.myapplication;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
+import android.icu.text.IDNA;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -397,6 +401,23 @@ public class MainActivity extends AppCompatActivity {
         list.setAdapter(adapter);
     }
 
+    //wechsel der Stegbelegung
+    boolean stegaisshowing = true;
+    public void wechsel (View view) {
+        ImageView imageViewStegA = findViewById(R.id. imageViewStegA);
+        ImageView imageViewStegB = findViewById(R.id. imageViewStegB);
 
-}
+        if(stegaisshowing) {
+            stegaisshowing = false;
+            imageViewStegA.animate().alpha(0).setDuration(2000);
+            imageViewStegB.animate().alpha(1).setDuration(2000);
+        }else {
+            stegaisshowing = true;
+            imageViewStegA.animate().alpha(1).setDuration(2000);
+            imageViewStegB.animate().alpha(0).setDuration(2000);
+
+        }
+    }
+
+    }
 
