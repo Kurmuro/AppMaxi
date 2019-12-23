@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/regatta_name"
+        android:layout_width="192dp"
+        android:layout_height="46dp"
+        android:gravity="center|left"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/regatta_timer"
+        android:layout_width="141dp"
+        android:layout_height="46dp"
+        android:layout_marginStart="-19dp"
+        android:layout_marginLeft="-19dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginRight="4dp"
+        android:layout_toStartOf="@+id/regatta_btn_stop"
+        android:layout_toLeftOf="@+id/regatta_btn_stop"
+        android:layout_toEndOf="@+id/regatta_name"
+        android:layout_toRightOf="@+id/regatta_name"
+        android:ems="10"
+        android:gravity="center"
+        android:inputType="time"
+        android:text="00:00:00"
+        android:textSize="20sp" />
+
+    <Button
+        android:id="@+id/regatta_btn_stop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginEnd="5dp"
+        android:layout_marginRight="5dp"
+        android:text="Stopp" />
+
+</RelativeLayout>

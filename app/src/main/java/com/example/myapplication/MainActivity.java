@@ -1,26 +1,37 @@
 package com.example.myapplication;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.icu.text.IDNA;
 import android.os.Bundle;
+import android.os.SystemClock;
+import android.text.Layout;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Chronometer;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextClock;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Timer;
 
 import static com.example.myapplication.DatabaseHelper.COL1;
 
@@ -31,6 +42,9 @@ public class MainActivity extends AppCompatActivity {
     EditText etFirstname, etLastname, etBoattype, etYardstick;
 
     boolean[] checked;
+    long pauseOffset;
+    boolean timerisrunning;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,12 +58,46 @@ public class MainActivity extends AppCompatActivity {
     //Zur Stegbelegung
     public void stegbelegung(View view) { setContentView(R.layout.steganlage); }
 
+    //timer
+    public void timer(){
+        final Chronometer timer = findViewById(R.id.EtTime);
+        final Button btnStartTime = (Button) findViewById(R.id.btnStartTime);
+
+        btnStartTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!timerisrunning) {
+                    if(checked != null) {
+
+                        timer.setBase(SystemClock.elapsedRealtime());
+                        btnStartTime.setText("Beenden");
+                        timer.start();
+                        timerisrunning = true;
+                    }
+
+                }else{
+                    timer.stop();
+                    pauseOffset = 0;
+                    regatta(null);
+                    checked = null;
+                    timerisrunning = false;
+                }
+            }
+        });
+    }
+
     //Zur Regatta
     public void regatta (View view) {
+
+
         userDB = new DatabaseHelper(this);
         setContentView(R.layout.regatta);
         btnSelectUser = (Button) findViewById(R.id.btnSelectUser);
         SelectUserData();
+        timerisrunning = false;
+
+        timer();
+
     }
 
     //Zum Blauenband
@@ -362,7 +410,6 @@ public class MainActivity extends AppCompatActivity {
                         usersid.add(numbers.get(i));
                     }
                 }
-                regatta(null);
                 addUserstoList(usersid);
             }
         });
@@ -374,10 +421,10 @@ public class MainActivity extends AppCompatActivity {
 
     //
     public void addUserstoList(List<Integer> usersid){
+
         Cursor data = userDB.showData();
 
         List<String> users = new ArrayList<String>();
-        String[] usernamensliste = new String[users.size()];
 
         for(int i:usersid){
             data.moveToFirst();
@@ -385,20 +432,16 @@ public class MainActivity extends AppCompatActivity {
                 data.moveToNext();
             }
             StringBuffer buffer = new StringBuffer();
-            buffer.append("Vorname: " + data.getString(1) + " ");
-            buffer.append("Nachname: " + data.getString(2) + " ");
-            buffer.append("Boottyp: " + data.getString(3) + " ");
-            buffer.append("Yardstick: " + data.getInt(4));
+            buffer.append(data.getString(1) + " ");
+            buffer.append(data.getString(2));
 
             users.add( buffer.toString());
 
         }
 
-        usernamensliste = users.toArray(usernamensliste);
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.da_item, usernamensliste);
         ListView list  = findViewById(R.id.regatteusertabel);
-        list.setAdapter(adapter);
+        list.setAdapter(new MyListAdapter(this, R.layout.regatta_items, users));
+
     }
 
     //wechsel der Stegbelegung
@@ -417,7 +460,52 @@ public class MainActivity extends AppCompatActivity {
             imageViewStegB.animate().alpha(0).setDuration(2000);
 
         }
+
     }
 
     }
+    class MyListAdapter extends ArrayAdapter<String>{
+        int layout;
+        List<String> object;
+        public MyListAdapter(@NonNull Context context, int resource, @NonNull List<String> objects) {
+            super(context, resource, objects);
+            layout = resource;
+            object = objects;
+        }
+
+        @NonNull
+        @Override
+        public View getView(final int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+            ViewHolder mainViewHolder = null;
+            if(convertView == null){
+                LayoutInflater inflater = LayoutInflater.from(getContext());
+                convertView = inflater.inflate(layout, parent, false);
+                final ViewHolder viewHolder = new ViewHolder();
+                viewHolder.name = (TextView) convertView.findViewById(R.id.regatta_name);
+                viewHolder.name.setText(object.get(position));
+                viewHolder.time = (TextView) convertView.findViewById(R.id.regatta_timer);
+                viewHolder.btnStop = (Button) convertView.findViewById(R.id.regatta_btn_stop);
+                viewHolder.btnStop.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Toast.makeText(getContext(),  "Teilnehmer " + object.get(position)+ " im Ziel", Toast.LENGTH_SHORT).show();
+                    }
+                });
+                convertView.setTag(viewHolder);
+            }
+            else{
+                mainViewHolder = (ViewHolder) convertView.getTag();
+                mainViewHolder.name.setText(getItem(position));
+            }
+
+            return convertView;
+        }
+    }
+    class ViewHolder{
+    TextView name;
+    TextView time;
+    Button btnStop;
+    }
+
+
 
