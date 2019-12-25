@@ -554,7 +554,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         boolean test = MainActivity.timerisrunning;
-                        if(test) {
+                        if(test && viewHolder.editable) {
                             Toast.makeText(getContext(), "Teilnehmer " + object.get(position) + " im Ziel", Toast.LENGTH_SHORT).show();
                             final long longseconds = (System.currentTimeMillis() - MainActivity.start)/1000;
                             final int a = (int)longseconds;
@@ -581,6 +581,9 @@ public class MainActivity extends AppCompatActivity {
                             String timestamp = secondString[2]+":"+secondString[1]+":"+ secondString[0];
                             viewHolder.time.setText(timestamp);
                             MainActivity.zeitTabelle.put(viewHolder.id, timestamp);
+                            viewHolder.editable = false;
+                        }else if(!viewHolder.editable){
+                            Toast.makeText(getContext(), "Teilnehmer wurde schon gestoppt", Toast.LENGTH_SHORT).show();
                         }else{
                             Toast.makeText(getContext(), "Du musst zuerst die Zeit Starten", Toast.LENGTH_SHORT).show();
                         }
@@ -597,6 +600,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
     class ViewHolder{
+    Boolean editable = true;
     TextView name;
     TextView time;
     Button btnStop;
