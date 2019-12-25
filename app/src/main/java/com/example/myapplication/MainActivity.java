@@ -33,6 +33,7 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -69,8 +70,6 @@ public class MainActivity extends AppCompatActivity {
     static long start;
     //timer
     public void timer(){
-
-        //long timeElapsed = finish - start;
 
 
         final TextView timeview = findViewById(R.id.EtTime);
@@ -395,6 +394,7 @@ public class MainActivity extends AppCompatActivity {
         dialog.show();
     }
 
+    static HashMap<Integer, String> zeitTabelle = new HashMap<Integer, String>();
     //Liste erstellen mit allen Auswählbaren Benutzern
     public void SelectUserData(){
         btnSelectUser.setOnClickListener(new View.OnClickListener() {
@@ -412,10 +412,12 @@ public class MainActivity extends AppCompatActivity {
 
 
                 List<Integer> numbers = new ArrayList<Integer>();
-
                 while(data.moveToNext()){
                     StringBuffer buffer = new StringBuffer();
                     numbers.add(data.getInt(0));
+                    if(!zeitTabelle.containsKey(data.getInt(0))){
+                        zeitTabelle.put(data.getInt(0), "00:00:00");
+                    }
                     buffer.append("Vorname: " + data.getString(1) + "\n");
                     buffer.append("Nachname: " + data.getString(2) + "\n");
                     buffer.append("Boottyp: " + data.getString(3) + "\n");
@@ -488,7 +490,12 @@ public class MainActivity extends AppCompatActivity {
         }
 
         ListView list  = findViewById(R.id.regatteusertabel);
-        list.setAdapter(new MyListAdapter(this, R.layout.regatta_items, users));
+        list.setAdapter(new MyListAdapter(this, R.layout.regatta_items, users, usersid));
+
+    }
+
+    //regatta beenden
+    public void regattaBeenden(View view){
 
     }
 
@@ -516,11 +523,13 @@ public class MainActivity extends AppCompatActivity {
 
         int layout;
         List<String> object;
+        List<Integer> useduserid;
         boolean timerisrunning;
-        public MyListAdapter(@NonNull Context context, int resource, @NonNull List<String> objects) {
+        public MyListAdapter(@NonNull Context context, int resource, @NonNull List<String> objects, List<Integer> usedusersid) {
             super(context, resource, objects);
             layout = resource;
             object = objects;
+            useduserid = usedusersid;
         }
 
         @NonNull
@@ -534,15 +543,44 @@ public class MainActivity extends AppCompatActivity {
                 viewHolder.name = (TextView) convertView.findViewById(R.id.regatta_name);
                 viewHolder.name.setText(object.get(position));
                 viewHolder.time = (TextView) convertView.findViewById(R.id.regatta_timer);
+
                 viewHolder.btnStop = (Button) convertView.findViewById(R.id.regatta_btn_stop);
+                viewHolder.id = useduserid.get(position);
+                if(!MainActivity.zeitTabelle.get(viewHolder.id).contains("00:00:00")){
+                    viewHolder.time.setText(MainActivity.zeitTabelle.get(viewHolder.id));
+                }
+                final String[] secondString = new String[3];
                 viewHolder.btnStop.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         boolean test = MainActivity.timerisrunning;
-                        long longseconds = (System.currentTimeMillis() - MainActivity.start)/1000;
                         if(test) {
-                            //Toast.makeText(getContext(), "Teilnehmer " + object.get(position) + " im Ziel", Toast.LENGTH_SHORT).show();
-                            Toast.makeText(getContext(), Long.toString(longseconds), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), "Teilnehmer " + object.get(position) + " im Ziel", Toast.LENGTH_SHORT).show();
+                            final long longseconds = (System.currentTimeMillis() - MainActivity.start)/1000;
+                            final int a = (int)longseconds;
+                            final int stunden = a / 3600;
+                            final int minuten = (a % 3600) / 60;
+                            final Integer sekunden = (a % 3600) % 60;
+
+
+                            secondString[0] = Integer.toString(sekunden);
+                            if(sekunden <=9) {
+                                secondString[0] = "0" + sekunden;
+
+                            }
+                            secondString[1] = Integer.toString(minuten);
+                            if(minuten <=9) {
+                                secondString[1] = "0" + minuten;
+
+                            }
+                            secondString[2] = Integer.toString(stunden);
+                            if(stunden <=9) {
+                                secondString[2] = "0" + stunden;
+
+                            }
+                            String timestamp = secondString[2]+":"+secondString[1]+":"+ secondString[0];
+                            viewHolder.time.setText(timestamp);
+                            MainActivity.zeitTabelle.put(viewHolder.id, timestamp);
                         }else{
                             Toast.makeText(getContext(), "Du musst zuerst die Zeit Starten", Toast.LENGTH_SHORT).show();
                         }
@@ -562,6 +600,7 @@ public class MainActivity extends AppCompatActivity {
     TextView name;
     TextView time;
     Button btnStop;
+    int id;
     }
 
 
