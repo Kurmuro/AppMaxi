@@ -102,12 +102,12 @@ public class MainActivity extends AppCompatActivity {
 
                                 }
                                 secondString[1] = Integer.toString(minuten);
-                                if(sekunden <=9) {
+                                if(minuten <=9) {
                                     secondString[1] = "0" + minuten;
 
                                 }
                                 secondString[2] = Integer.toString(stunden);
-                                if(sekunden <=9) {
+                                if(stunden <=9) {
                                     secondString[2] = "0" + stunden;
 
                                 }
