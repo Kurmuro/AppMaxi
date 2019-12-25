@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
         final TextView timeview = findViewById(R.id.EtTime);
         final Button btnStartTime = (Button) findViewById(R.id.btnStartTime);
         final Timer stoppuhr =  new Timer();
-        final String[] secondString = new String[1];
+        final String[] secondString = new String[3];
         btnStartTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -101,12 +101,22 @@ public class MainActivity extends AppCompatActivity {
                                     secondString[0] = "0" + sekunden;
 
                                 }
+                                secondString[1] = Integer.toString(minuten);
+                                if(sekunden <=9) {
+                                    secondString[1] = "0" + minuten;
+
+                                }
+                                secondString[2] = Integer.toString(stunden);
+                                if(sekunden <=9) {
+                                    secondString[2] = "0" + stunden;
+
+                                }
 
                                 runOnUiThread(new Runnable() {
                                     @Override
                                     public void run()
 
-                                    { timeview.setText(stunden+":"+minuten+":"+ secondString[0]);
+                                    { timeview.setText(secondString[2]+":"+secondString[1]+":"+ secondString[0]);
                                     }
                                 });
                             }
