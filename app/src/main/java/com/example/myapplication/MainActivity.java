@@ -88,13 +88,17 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void run() {
 
-                                long longseconds = (System.currentTimeMillis() - start)/1000;
-                                int a = (int)longseconds;
-                                int stunden = a / 3600;
-                                int minuten = (a % 3600) / 60;
-                                int sekunden = (a % 3600) % 60;
+                                final long longseconds = (System.currentTimeMillis() - start)/1000;
+                                final int a = (int)longseconds;
+                                final int stunden = a / 3600;
+                                final int minuten = (a % 3600) / 60;
+                                final int sekunden = (a % 3600) % 60;
 
-                                timeview.setText(stunden+":"+minuten+":"+sekunden);
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() { timeview.setText(stunden+":"+minuten+":"+sekunden);
+                                    }
+                                });
                             }
                         },0,1000);
 
