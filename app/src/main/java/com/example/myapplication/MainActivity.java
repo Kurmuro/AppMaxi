@@ -94,9 +94,15 @@ public class MainActivity extends AppCompatActivity {
                                 final int minuten = (a % 3600) / 60;
                                 final int sekunden = (a % 3600) % 60;
 
+                                final String secondString = Integer.toString(sekunden);
+                                if(sekunden <=9) { secondString = "0" + secondString;
+                                }
+
                                 runOnUiThread(new Runnable() {
                                     @Override
-                                    public void run() { timeview.setText(stunden+":"+minuten+":"+sekunden);
+                                    public void run()
+
+                                    { timeview.setText(stunden+":"+minuten+":"+secondString);
                                     }
                                 });
                             }
