@@ -9,7 +9,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
+import android.icu.text.DateTimePatternGenerator;
 import android.icu.text.IDNA;
+import android.icu.text.SimpleDateFormat;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.text.Layout;
@@ -30,6 +32,7 @@ import android.widget.Toast;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -43,11 +46,6 @@ public class MainActivity extends AppCompatActivity {
     EditText etFirstname, etLastname, etBoattype, etYardstick;
 
     boolean[] checked;
-    static long pauseOffset;
-    public static long getPauseOffset(){
-        pauseOffset = SystemClock.elapsedRealtime();
-        return pauseOffset;
-    }
 
 
 
@@ -68,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-    long start;
+    static long start;
     //timer
     public void timer(){
 
@@ -89,10 +87,16 @@ public class MainActivity extends AppCompatActivity {
                         stoppuhr.schedule(new TimerTask() {
                             @Override
                             public void run() {
-                                timeview.setText(Long.toString((System.currentTimeMillis() - start)/1000));
-                                System.out.println("test");
+
+                                long longseconds = (System.currentTimeMillis() - start)/1000;
+                                int a = (int)longseconds;
+                                int stunden = a / 3600;
+                                int minuten = (a % 3600) / 60;
+                                int sekunden = (a % 3600) % 60;
+
+                                timeview.setText(stunden+":"+minuten+":"+sekunden);
                             }
-                        },1000);
+                        },0,1000);
 
                     }
 
@@ -511,10 +515,10 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         boolean test = MainActivity.timerisrunning;
-                        long zeit = MainActivity.getPauseOffset();
+                        long longseconds = (System.currentTimeMillis() - MainActivity.start)/1000;
                         if(test) {
                             //Toast.makeText(getContext(), "Teilnehmer " + object.get(position) + " im Ziel", Toast.LENGTH_SHORT).show();
-                            Toast.makeText(getContext(), Long.toString(zeit), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), Long.toString(longseconds), Toast.LENGTH_SHORT).show();
                         }else{
                             Toast.makeText(getContext(), "Du musst zuerst die Zeit Starten", Toast.LENGTH_SHORT).show();
                         }
