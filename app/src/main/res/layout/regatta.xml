@@ -19,7 +19,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <Chronometer
+    <TextView
         android:id="@+id/EtTime"
         android:layout_width="0dp"
         android:layout_height="50dp"
@@ -32,6 +32,7 @@
         android:enabled="true"
         android:gravity="center"
         android:inputType="time"
+        android:text="00:00:00"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/btnStartTime"
         app:layout_constraintTop_toTopOf="parent" />

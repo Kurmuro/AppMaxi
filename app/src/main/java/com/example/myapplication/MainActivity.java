@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Timer;
+import java.util.TimerTask;
 
 import static com.example.myapplication.DatabaseHelper.COL1;
 
@@ -42,8 +43,15 @@ public class MainActivity extends AppCompatActivity {
     EditText etFirstname, etLastname, etBoattype, etYardstick;
 
     boolean[] checked;
-    long pauseOffset;
-    boolean timerisrunning;
+    static long pauseOffset;
+    public static long getPauseOffset(){
+        pauseOffset = SystemClock.elapsedRealtime();
+        return pauseOffset;
+    }
+
+
+
+    static boolean timerisrunning;
 
 
     @Override
@@ -58,26 +66,38 @@ public class MainActivity extends AppCompatActivity {
     //Zur Stegbelegung
     public void stegbelegung(View view) { setContentView(R.layout.steganlage); }
 
+
+
+    long start;
     //timer
     public void timer(){
-        final Chronometer timer = findViewById(R.id.EtTime);
-        final Button btnStartTime = (Button) findViewById(R.id.btnStartTime);
 
+        //long timeElapsed = finish - start;
+
+
+        final TextView timeview = findViewById(R.id.EtTime);
+        final Button btnStartTime = (Button) findViewById(R.id.btnStartTime);
+        final Timer stoppuhr =  new Timer();
         btnStartTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!timerisrunning) {
+               if(!timerisrunning) {
                     if(checked != null) {
-
-                        timer.setBase(SystemClock.elapsedRealtime());
+                        start = System.currentTimeMillis();
                         btnStartTime.setText("Beenden");
-                        timer.start();
                         timerisrunning = true;
+                        stoppuhr.schedule(new TimerTask() {
+                            @Override
+                            public void run() {
+                                timeview.setText(Long.toString((System.currentTimeMillis() - start)/1000));
+                                System.out.println("test");
+                            }
+                        },1000);
+
                     }
 
                 }else{
-                    timer.stop();
-                    pauseOffset = 0;
+                    stoppuhr.cancel();
                     regatta(null);
                     checked = null;
                     timerisrunning = false;
@@ -465,8 +485,10 @@ public class MainActivity extends AppCompatActivity {
 
     }
     class MyListAdapter extends ArrayAdapter<String>{
+
         int layout;
         List<String> object;
+        boolean timerisrunning;
         public MyListAdapter(@NonNull Context context, int resource, @NonNull List<String> objects) {
             super(context, resource, objects);
             layout = resource;
@@ -488,7 +510,14 @@ public class MainActivity extends AppCompatActivity {
                 viewHolder.btnStop.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Toast.makeText(getContext(),  "Teilnehmer " + object.get(position)+ " im Ziel", Toast.LENGTH_SHORT).show();
+                        boolean test = MainActivity.timerisrunning;
+                        long zeit = MainActivity.getPauseOffset();
+                        if(test) {
+                            //Toast.makeText(getContext(), "Teilnehmer " + object.get(position) + " im Ziel", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), Long.toString(zeit), Toast.LENGTH_SHORT).show();
+                        }else{
+                            Toast.makeText(getContext(), "Du musst zuerst die Zeit Starten", Toast.LENGTH_SHORT).show();
+                        }
                     }
                 });
                 convertView.setTag(viewHolder);
