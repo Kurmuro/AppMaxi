@@ -151,7 +151,18 @@ public class MainActivity extends AppCompatActivity {
     public void blauesband (View view) {setContentView(R.layout.blauesband);}
 
     //Zu den Blauesband Regeln
-    public void regelnbb (View view) {setContentView(R.layout.regelnbb);}
+    public void regelnbb (View view) {
+        setContentView(R.layout.regelnbb);
+        final Button zurückbbregeln = (Button) findViewById(R.id.zurückbbregeln);
+
+        zurückbbregeln.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                blauesband(null);
+            }
+        });
+
+    }
 
     //Benutzerverwaltung
     public void usersettings(View view){
@@ -606,6 +617,3 @@ public class MainActivity extends AppCompatActivity {
     Button btnStop;
     int id;
     }
-
-
-

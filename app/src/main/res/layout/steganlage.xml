@@ -7,7 +7,7 @@
     tools:context=".MainActivity">
 
     <Button
-        android:id="@+id/zurück"
+        android:id="@+id/zurückbbregeln"
         android:layout_width="72dp"
         android:layout_height="36dp"
         android:layout_marginStart="8dp"
@@ -30,7 +30,7 @@
         android:layout_marginRight="8dp"
         android:layout_marginBottom="58dp"
         android:onClick="wechsel"
-        app:layout_constraintBottom_toTopOf="@+id/zurück"
+        app:layout_constraintBottom_toTopOf="@+id/zurückbbregeln"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -48,7 +48,7 @@
         android:layout_marginBottom="58dp"
         android:alpha="0"
         android:onClick="wechsel"
-        app:layout_constraintBottom_toTopOf="@+id/zurück"
+        app:layout_constraintBottom_toTopOf="@+id/zurückbbregeln"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

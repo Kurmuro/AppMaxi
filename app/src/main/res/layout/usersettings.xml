@@ -58,7 +58,7 @@
         app:srcCompat="@drawable/header" />
 
     <Button
-        android:id="@+id/zurück"
+        android:id="@+id/zurückbbregeln"
         android:layout_width="72dp"
         android:layout_height="36dp"
         android:layout_marginStart="8dp"
