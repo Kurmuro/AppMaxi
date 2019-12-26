@@ -4,41 +4,27 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
-import android.icu.text.DateTimePatternGenerator;
-import android.icu.text.IDNA;
-import android.icu.text.SimpleDateFormat;
 import android.os.Bundle;
-import android.os.SystemClock;
-import android.text.Layout;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.Chronometer;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextClock;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
-
-import static com.example.myapplication.DatabaseHelper.COL1;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -82,52 +68,51 @@ public class MainActivity extends AppCompatActivity {
                if(!timerisrunning) {
                     if(checked != null) {
                         start = System.currentTimeMillis();
-                        btnStartTime.setText("Beenden");
+                        btnStartTime.setText("Abbrechen");
                         timerisrunning = true;
                         stoppuhr.schedule(new TimerTask() {
                             @Override
                             public void run() {
 
-                                final long longseconds = (System.currentTimeMillis() - start)/1000;
-                                final int a = (int)longseconds;
+                                final long longseconds = (System.currentTimeMillis() - start) / 1000;
+                                final int a = (int) longseconds;
                                 final int stunden = a / 3600;
                                 final int minuten = (a % 3600) / 60;
                                 final Integer sekunden = (a % 3600) % 60;
 
 
                                 secondString[0] = Integer.toString(sekunden);
-                                if(sekunden <=9) {
+                                if (sekunden <= 9) {
                                     secondString[0] = "0" + sekunden;
 
                                 }
                                 secondString[1] = Integer.toString(minuten);
-                                if(minuten <=9) {
+                                if (minuten <= 9) {
                                     secondString[1] = "0" + minuten;
 
                                 }
                                 secondString[2] = Integer.toString(stunden);
-                                if(stunden <=9) {
+                                if (stunden <= 9) {
                                     secondString[2] = "0" + stunden;
 
                                 }
 
                                 runOnUiThread(new Runnable() {
                                     @Override
-                                    public void run()
-
-                                    { timeview.setText(secondString[2]+":"+secondString[1]+":"+ secondString[0]);
+                                    public void run() {
+                                        timeview.setText(secondString[2] + ":" + secondString[1] + ":" + secondString[0]);
                                     }
                                 });
                             }
-                        },0,1000);
-
+                        }, 0, 1000);
                     }
-
                 }else{
                     stoppuhr.cancel();
                     regatta(null);
                     checked = null;
                     timerisrunning = false;
+                   userclickable.clear();
+                   zeitTabelle.clear();
                 }
             }
         });
@@ -500,7 +485,7 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
-        ListView list  = findViewById(R.id.regatteusertabel);
+        ListView list  = findViewById(R.id.rangliste);
         list.setAdapter(new MyListAdapter(this, R.layout.regatta_items, users, usersid));
 
     }
@@ -529,13 +514,16 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
+    static HashMap<Integer, Boolean> userclickable = new HashMap<Integer, Boolean>();
+
     }
     class MyListAdapter extends ArrayAdapter<String>{
 
         int layout;
         List<String> object;
         List<Integer> useduserid;
-        boolean timerisrunning;
+
         public MyListAdapter(@NonNull Context context, int resource, @NonNull List<String> objects, List<Integer> usedusersid) {
             super(context, resource, objects);
             layout = resource;
@@ -555,10 +543,16 @@ public class MainActivity extends AppCompatActivity {
                 viewHolder.name.setText(object.get(position));
                 viewHolder.time = (TextView) convertView.findViewById(R.id.regatta_timer);
 
+                viewHolder.btnClear =(Button) convertView.findViewById(R.id.regatta_btn_clear);
                 viewHolder.btnStop = (Button) convertView.findViewById(R.id.regatta_btn_stop);
                 viewHolder.id = useduserid.get(position);
                 if(!MainActivity.zeitTabelle.get(viewHolder.id).contains("00:00:00")){
                     viewHolder.time.setText(MainActivity.zeitTabelle.get(viewHolder.id));
+                }
+                if(MainActivity.userclickable.get(viewHolder.id) != null) {
+                    if (!MainActivity.userclickable.get(viewHolder.id)) {
+                        viewHolder.editable = false;
+                    }
                 }
                 final String[] secondString = new String[3];
                 viewHolder.btnStop.setOnClickListener(new View.OnClickListener() {
@@ -593,11 +587,21 @@ public class MainActivity extends AppCompatActivity {
                             viewHolder.time.setText(timestamp);
                             MainActivity.zeitTabelle.put(viewHolder.id, timestamp);
                             viewHolder.editable = false;
+                            MainActivity.userclickable.put(viewHolder.id,false);
                         }else if(!viewHolder.editable){
                             Toast.makeText(getContext(), "Teilnehmer wurde schon gestoppt", Toast.LENGTH_SHORT).show();
                         }else{
                             Toast.makeText(getContext(), "Du musst zuerst die Zeit Starten", Toast.LENGTH_SHORT).show();
                         }
+                    }
+                });
+                viewHolder.btnClear.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        viewHolder.time.setText("00:00:00");
+                        MainActivity.zeitTabelle.put(viewHolder.id,null);
+                        viewHolder.editable = true;
+                        MainActivity.userclickable.put(viewHolder.id,null);
                     }
                 });
                 convertView.setTag(viewHolder);
@@ -615,5 +619,6 @@ public class MainActivity extends AppCompatActivity {
     TextView name;
     TextView time;
     Button btnStop;
+    Button btnClear;
     int id;
     }
