@@ -86,7 +86,7 @@
 
     <ListView
         android:id="@+id/rangliste"
-        android:layout_width="360dp"
+        android:layout_width="0dp"
         android:layout_height="494dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
